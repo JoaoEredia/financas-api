@@ -1,6 +1,10 @@
 package com.financeiro.financas_api.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,31 +13,42 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
-@Table(name = "tb_transacao")
+@Table(name = "tb_transacoes")
 public class Transacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 150)
     private String descricao;
+
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal valor;
+
+    @Column(nullable = false)
     private LocalDate data;
 
-    @ManyToOne
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private TipoTransacao tipo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
     public Transacao() {
     }
 
-    public Transacao(Long id, String descricao, BigDecimal valor, LocalDate data, Categoria categoria) {
+    public Transacao(Long id, String descricao, BigDecimal valor, LocalDate data, TipoTransacao tipo, Categoria categoria) {
         this.id = id;
         this.descricao = descricao;
         this.valor = valor;
         this.data = data;
+        this.tipo = tipo;
         this.categoria = categoria;
     }
 
@@ -69,11 +84,32 @@ public class Transacao {
         this.data = data;
     }
 
+    public TipoTransacao getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoTransacao tipo) {
+        this.tipo = tipo;
+    }
+
     public Categoria getCategoria() {
         return categoria;
     }
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transacao transacao = (Transacao) o;
+        return Objects.equals(id, transacao.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
