@@ -37,13 +37,12 @@ public class TransacaoController {
 
     // POST: http://localhost:8080/transacoes
     @PostMapping
-    public ResponseEntity<Transacao> salvar(@RequestBody Transacao transacao) {
+    public ResponseEntity<?> salvar(@RequestBody Transacao transacao) {
         try {
             Transacao novaTransacao = transacaoService.salvar(transacao);
             return ResponseEntity.status(HttpStatus.CREATED).body(novaTransacao);
         } catch (IllegalArgumentException e) {
-            // Retorna erro 400 Bad Request se a categoria não existir
-            return ResponseEntity.badRequest().build(); 
+            return ResponseEntity.badRequest().body(e.getMessage()); 
         }
     }
 
