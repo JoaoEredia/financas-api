@@ -35,4 +35,5 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
 
     
     List<Transacao> findByCategoriaId(Long categoriaId);
+    void deleteByCategoriaId(Long categoriaId);
 }
