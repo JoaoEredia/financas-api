@@ -36,4 +36,16 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
     
     List<Transacao> findByCategoriaId(Long categoriaId);
     void deleteByCategoriaId(Long categoriaId);
+
+    @org.springframework.data.jpa.repository.Query(
+        "SELECT COALESCE(SUM(t.valor), 0) FROM Transacao t " +
+        "WHERE t.categoria.id = :categoriaId " +
+        "AND t.tipo = com.financeiro.financas_api.model.TipoTransacao.DESPESA " +
+        "AND MONTH(t.data) = :mes AND YEAR(t.data) = :ano"
+    )
+    java.math.BigDecimal somarGastosPorCategoriaEMes(
+        @org.springframework.data.repository.query.Param("categoriaId") Long categoriaId,
+        @org.springframework.data.repository.query.Param("mes") Integer mes,
+        @org.springframework.data.repository.query.Param("ano") Integer ano
+    );
 }
