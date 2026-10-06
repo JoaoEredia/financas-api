@@ -8,4 +8,6 @@ import java.util.List;
 public interface OrcamentoRepository extends JpaRepository<Orcamento, Long> {
     Optional<Orcamento> findByCategoriaIdAndMesAndAno(Long categoriaId, Integer mes, Integer ano);
     List<Orcamento> findByMesAndAno(Integer mes, Integer ano);
+
+    void deleteByCategoriaIdAndMesAndAno(Long categoriaId, Integer mes, Integer ano);
 }

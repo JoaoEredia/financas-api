@@ -23,6 +23,8 @@ public class OrcamentoController {
 
     @PostMapping
     public ResponseEntity<Orcamento> salvarOuAtualizar(@RequestBody Orcamento orcamento) {
+        // Se a sua lógica no service ou controller verifica categoria + mes + ano, 
+        // ou se o save direto já trata o registro:
         return ResponseEntity.ok(orcamentoRepository.save(orcamento));
     }
 
@@ -32,4 +34,20 @@ public class OrcamentoController {
             @RequestParam Integer ano) {
         return ResponseEntity.ok(orcamentoService.obterResumoMensal(mes, ano));
     }
+
+    // ADICIONE ESTE MÉTODO DELETAR:
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        orcamentoRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/categoria/{categoriaId}")
+public ResponseEntity<Void> deletarPorCategoria(
+        @PathVariable Long categoriaId,
+        @RequestParam Integer mes,
+        @RequestParam Integer ano) {
+    orcamentoService.deletarPorCategoriaEMesEAno(categoriaId, mes, ano);
+    return ResponseEntity.noContent().build();
+}
 }

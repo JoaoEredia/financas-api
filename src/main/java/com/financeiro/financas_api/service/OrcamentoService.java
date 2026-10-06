@@ -6,6 +6,7 @@ import com.financeiro.financas_api.repository.OrcamentoRepository;
 import com.financeiro.financas_api.repository.TransacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,6 +19,13 @@ public class OrcamentoService {
 
     @Autowired
     private TransacaoRepository transacaoRepository;
+
+
+    @Transactional
+public void deletarPorCategoriaEMesEAno(Long categoriaId, Integer mes, Integer ano) {
+    orcamentoRepository.deleteByCategoriaIdAndMesAndAno(categoriaId, mes, ano);
+}
+
 
     public List<OrcamentoResumoDTO> obterResumoMensal(Integer mes, Integer ano) {
         List<Orcamento> orcamentos = orcamentoRepository.findByMesAndAno(mes, ano);
