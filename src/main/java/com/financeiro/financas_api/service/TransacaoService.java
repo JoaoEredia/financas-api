@@ -8,6 +8,7 @@ import com.financeiro.financas_api.repository.TransacaoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -68,5 +69,22 @@ public class TransacaoService {
     @Transactional(readOnly = true)
     public List<Transacao> buscarPorTipo(TipoTransacao tipo) {
         return transacaoRepository.findByTipo(tipo);
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal calcularSaldoAtual() {
+        List<Transacao> transacoes = transacaoRepository.findAll();
+
+        BigDecimal receitas = transacoes.stream()
+                .filter(t -> t.getTipo() == TipoTransacao.RECEITA)
+                .map(Transacao::getValor)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal despesas = transacoes.stream()
+                .filter(t -> t.getTipo() == TipoTransacao.DESPESA)
+                .map(Transacao::getValor)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return receitas.subtract(despesas);
     }
 }
