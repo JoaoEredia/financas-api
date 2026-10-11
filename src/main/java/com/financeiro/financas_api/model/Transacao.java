@@ -37,7 +37,7 @@ public class Transacao {
     private TipoTransacao tipo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoria_id", nullable = false)
+    @JoinColumn(name = "categoria_id", nullable = true)
     private Categoria categoria;
 
     public Transacao() {

@@ -40,13 +40,17 @@ public class TransacaoService {
     
     @Transactional
     public Transacao salvar(Transacao transacao) {
-        Long categoriaId = transacao.getCategoria().getId();
-        
-        
-        Categoria categoria = categoriaRepository.findById(categoriaId)
-                .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada com o ID: " + categoriaId));
+        // Se foi enviada categoria com ID (normalmente em DESPESA)
+        if (transacao.getCategoria() != null && transacao.getCategoria().getId() != null) {
+            Long categoriaId = transacao.getCategoria().getId();
+            Categoria categoria = categoriaRepository.findById(categoriaId)
+                    .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada com o ID: " + categoriaId));
+            transacao.setCategoria(categoria);
+        } else {
+            // Se for RECEITA (ou sem categoria), define como nulo
+            transacao.setCategoria(null);
+        }
 
-        transacao.setCategoria(categoria);
         return transacaoRepository.save(transacao);
     }
 
